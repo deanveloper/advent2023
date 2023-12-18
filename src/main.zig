@@ -6,6 +6,7 @@ const days = struct {
     pub const day03 = @import("./day03/main.zig");
 };
 
+// only used for executing the first three days. after which I decided to use `zig test` to execute my files
 pub fn main() !void {
     var allocator = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer allocator.deinit();

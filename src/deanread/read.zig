@@ -1,9 +1,5 @@
 const std = @import("std");
 
-fn foo() void {
-    _ = try readFromExe(std.heap.page_allocator, "foo.exe");
-}
-
 pub fn readFromExe(allocator: std.mem.Allocator, relpath: []const u8) ![]u8 {
     const abspath = std.fs.path.join(allocator, &.{ "resources", relpath }) catch return error.AssemblingPath;
     const file = std.fs.cwd().openFile(abspath, .{}) catch return error.OpeningFile;
