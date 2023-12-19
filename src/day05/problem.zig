@@ -50,7 +50,7 @@ test "part 2" {
         }
     }
 
-    try std.testing.expectEqual(@as(u64, 1), minLocation);
+    try std.testing.expectEqual(@as(u64, 69323688), minLocation);
 }
 
 pub const Resource = enum {
