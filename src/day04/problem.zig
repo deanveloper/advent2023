@@ -1,5 +1,4 @@
 const std = @import("std");
-const deanread = @import("../deanread/read.zig");
 
 test "part 1" {
     const content = @embedFile("./cards.txt");
@@ -54,12 +53,6 @@ test "part 2" {
     }
 
     try std.testing.expectEqual(@as(u32, 5489600), scratchCards);
-}
-
-fn part2(alloc: std.mem.Allocator, lines: []const []const u8) !u32 {
-    _ = alloc;
-    _ = lines;
-    return 0;
 }
 
 const Card = struct {

@@ -20,7 +20,7 @@ pub const Schematic = struct {
         return schem;
     }
 
-    pub fn deinit(self: Schematic) void {
+    pub fn deinit(self: *Schematic) void {
         self.numbers.deinit();
         self.symbols.deinit();
     }

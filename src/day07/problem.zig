@@ -26,7 +26,6 @@ test "part 1" {
     var totalWinnings: u64 = 0;
     for (players.items, 1..) |player, i| {
         totalWinnings += player.bid * i;
-        std.debug.print("{} * {}\n", .{ player, i });
     }
 
     try std.testing.expectEqual(@as(u64, 250898830), totalWinnings);
@@ -58,10 +57,9 @@ test "part 2" {
     var totalWinnings: u64 = 0;
     for (players.items, 1..) |player, i| {
         totalWinnings += player.bid * i;
-        std.debug.print("{} * {}\n", .{ player, i });
     }
 
-    try std.testing.expectEqual(@as(u64, 1), totalWinnings);
+    try std.testing.expectEqual(@as(u64, 252127335), totalWinnings);
 }
 
 fn comparePlayerHands(_: void, a: Player, b: Player) bool {

@@ -1,19 +1,27 @@
 const std = @import("std");
-const deanread = @import("../deanread/read.zig");
+const deanread = @import("dean");
 const Schematic = @import("./schematic.zig").Schematic;
 
-pub fn main(alloc: std.mem.Allocator) !void {
+test "legacy" {
+    const alloc = std.testing.allocator;
     const content = try deanread.readFromExe(alloc, "day03.txt");
+    defer alloc.free(content);
+
     var lines = std.ArrayList([]const u8).init(alloc);
+    defer lines.deinit();
+
     var linesIter = std.mem.splitScalar(u8, content, '\n');
     while (linesIter.next()) |line| {
         try lines.append(line);
     }
-    std.debug.print("\n{d}\n", .{try part2(alloc, lines.items)});
+
+    const answer = try part2(alloc, lines.items);
+    try std.testing.expectEqual(@as(u32, 78826761), answer);
 }
 
 fn part1(alloc: std.mem.Allocator, lines: []const []const u8) !u32 {
-    const schem = try Schematic.init(alloc, lines);
+    var schem = try Schematic.init(alloc, lines);
+    defer schem.deinit();
 
     var sum: u32 = 0;
 
@@ -27,13 +35,15 @@ fn part1(alloc: std.mem.Allocator, lines: []const []const u8) !u32 {
 }
 
 fn part2(alloc: std.mem.Allocator, lines: []const []const u8) !u32 {
-    const schem = try Schematic.init(alloc, lines);
+    var schem = try Schematic.init(alloc, lines);
+    defer schem.deinit();
 
     var sum: u32 = 0;
     for (schem.symbols.keys()) |coord| {
         const symbol = schem.symbols.get(coord) orelse unreachable;
         if (symbol == '*') {
             var list = std.AutoArrayHashMap(Schematic.Number, void).init(alloc);
+            defer list.deinit();
             try schem.numbersAdjacentToSymbol(coord.x, coord.y, &list);
 
             if (list.count() >= 2) {

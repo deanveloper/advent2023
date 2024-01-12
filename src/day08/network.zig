@@ -78,13 +78,13 @@ pub const Network = struct {
 
 /// used for part 2 - optimization to not need to repeatedly follow nodes once cycles are calculated.
 /// i'm now realizing that this would've been way easier with graph theory
-const Cycle = struct {
+pub const Cycle = struct {
     alloc: std.mem.Allocator,
     start: usize,
     end: usize,
     zList: []const usize,
 
-    fn nextAfter(self: Cycle, index: usize) usize {
+    pub fn nextAfter(self: Cycle, index: usize) usize {
 
         // simple case, just return the first thing larger than `index`
         if (index < self.end) {
@@ -115,7 +115,7 @@ const Cycle = struct {
         unreachable;
     }
 
-    fn fromNetwork(alloc: std.mem.Allocator, network: Network, startingNode: []const u8, moves: []Move) !Cycle {
+    pub fn fromNetwork(alloc: std.mem.Allocator, network: Network, startingNode: []const u8, moves: []Move) !Cycle {
         var cycleStart: usize = undefined;
         var cycleEnd: usize = undefined;
 
@@ -162,21 +162,21 @@ const Cycle = struct {
         return Cycle{ .alloc = alloc, .start = cycleStart, .end = cycleEnd, .zList = zListSlice };
     }
 
-    fn deinit(self: Cycle) void {
+    pub fn deinit(self: Cycle) void {
         self.alloc.free(self.zList);
     }
 };
 
 test "Cycle.fromNetwork" {
-    const netMap = std.StringHashMap(Destinations).init(std.testing.allocator);
+    var netMap = std.StringHashMap(Destinations).init(std.testing.allocator);
     defer netMap.deinit();
 
-    netMap.put("AAA", Destinations{ .left = "ABC", .right = "" });
-    netMap.put("ABC", Destinations{ .left = "", .right = "DEF" });
-    netMap.put("DEF", Destinations{ .left = "", .right = "LOL" });
-    netMap.put("LOL", Destinations{ .left = "", .right = "BFF" });
-    netMap.put("BFF", Destinations{ .left = "XYZ", .right = "BFF" });
-    netMap.put("XYZ", Destinations{ .left = "", .right = "" });
+    try netMap.put("AAA", Destinations{ .left = "ABC", .right = "" });
+    try netMap.put("ABC", Destinations{ .left = "", .right = "DEF" });
+    try netMap.put("DEF", Destinations{ .left = "", .right = "LOL" });
+    try netMap.put("LOL", Destinations{ .left = "", .right = "BFF" });
+    try netMap.put("BFF", Destinations{ .left = "XYZ", .right = "BFF" });
+    try netMap.put("XYZ", Destinations{ .left = "", .right = "" });
 
     const moves = [_]Move{ .Left, .Right, .Right, .Right, .Left };
     _ = moves;

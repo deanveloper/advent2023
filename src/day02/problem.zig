@@ -1,17 +1,22 @@
 const std = @import("std");
-const deanread = @import("../deanread/read.zig");
+const deanread = @import("dean");
+
+test "legacy" {
+    const alloc = std.testing.allocator;
+
+    const content = try deanread.readFromExe(alloc, "day02.txt");
+    defer alloc.free(content);
+
+    var lines = std.mem.splitScalar(u8, content, '\n');
+    const answer = try part2(&lines);
+    try std.testing.expectEqual(@as(u32, 72513), answer);
+}
 
 const Balls = struct {
     red: u32 = 0,
     green: u32 = 0,
     blue: u32 = 0,
 };
-
-pub fn main(alloc: std.mem.Allocator) !void {
-    const content = try deanread.readFromExe(alloc, "day02.txt");
-    var lines = std.mem.splitScalar(u8, content, '\n');
-    std.debug.print("\n{d}\n", .{try part2(&lines)});
-}
 
 fn part1(lines: *std.mem.SplitIterator(u8, std.mem.DelimiterType.scalar)) !u32 {
     var sum: u32 = 0;

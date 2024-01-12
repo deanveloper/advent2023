@@ -95,5 +95,5 @@ test "part 2" {
         }
     }
 
-    try std.testing.expectEqual(@as(u64, 1), numberOfWaysToWin);
+    try std.testing.expectEqual(@as(u64, 35961505), numberOfWaysToWin);
 }

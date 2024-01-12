@@ -1,10 +1,16 @@
 const std = @import("std");
-const deanread = @import("../deanread/read.zig");
+const deanread = @import("dean");
 
-pub fn main(alloc: std.mem.Allocator) !void {
+test "legacy" {
+    const alloc = std.testing.allocator;
+
     const content = try deanread.readFromExe(alloc, "day01.txt");
+    defer alloc.free(content);
+
     var lines = std.mem.splitScalar(u8, content, '\n');
     var numbers = std.ArrayList(u8).init(alloc);
+    defer numbers.deinit();
+
     while (lines.next()) |line| {
         const hehe = processLine(line) orelse break;
         const number = hehe[0] * 10 + hehe[1];
@@ -15,7 +21,8 @@ pub fn main(alloc: std.mem.Allocator) !void {
     for (numbers.items) |number| {
         sum += number;
     }
-    std.log.info("{}", .{sum});
+
+    try std.testing.expectEqual(@as(u32, 54875), sum);
 }
 
 pub fn processLine(line: []const u8) ?struct { u8, u8 } {
